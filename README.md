@@ -44,4 +44,13 @@ Each variable X can take on the values in the nonempty domain D. Every constrain
 6. Customer likes to sit in the middle of the row in the theatres. 
 
 Approach to the implement the solution: 
- a Binary search tree
+ 1. Implemented a Binary search tree starting with row 'J' as the root.
+ 2. Added new rows(I,H,G....A) when the seats to be reserved are greater than seats empty in the tree. 
+    If seats in I are greater than J becomes the right child of the node else the left child. 
+ 3. If the row is Full, it is removed from the tree and replaced with next row. example if J is full it was deleted from the       tree and I becomes the node. 
+ 4. Program exits if the tree is empty again after adding 20 nodes or cannot accomodate the rest of the reservation. 
+ 
+ Why Using BST: 
+ we want to accomodate the seats in first come first serv. 
+ 
+ 
