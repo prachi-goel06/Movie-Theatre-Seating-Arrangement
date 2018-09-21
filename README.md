@@ -32,11 +32,16 @@ Formally, a constraint satisfaction problem is defined as a triple <X,D,C> where
 X={X1,,,,,,Xn} is a set of variables,
 D={D1,,,,,,Dn} is a set of the respective domains of values, and
 C={C1,,,,,,Cm} is a set of constraints.
-Each variable X can take on the values in the nonempty domain D. Every constraint in C is in turn a pair <Ti,Ri> , where Ti belongs to X is a subset of k variables and R is a  k-ary relation on the corresponding subset of domains Di. An evaluation of the variables is a function from a subset of variables to a particular set of values in the corresponding subset of domains. An evaluation v satisfies a constraint  if the values assigned to the variables {\displaystyle t_{j}} t_{j} satisfies the relation {\displaystyle R_{j}} R_{j}.
+Each variable X can take on the values in the nonempty domain D. Every constraint in C is in turn a pair <Ti,Ri> , where Ti belongs to X is a subset of k variables and R is a  k-ary relation on the corresponding subset of domains Di. An evaluation of the variables is a function from a subset of variables to a particular set of values in the corresponding subset of domains. An evaluation v satisfies a constraint  if the values assigned to the variable satisfies the relation.[1]
 
 
 #Assumptions made while implementing the Algorithm:
 1. Cost of all the seats in the theatre are same. 
 2. Seats are reserved on the First come first serve basis. 
-3. Customers who reserves the seat first are offeredn better seats(seats that are far from the screen) than the customers who are reserve later. 
-4. Bookings greater than 20 will always be in multiple of 2. 
+3. Customers who reserves the seat first are offered better seats(seats that are far from the screen) than the customers who are reserve later. 
+4. Bulk seat booking reservation(>=100)will be given more priotity than small bookings. 
+5. Small Reservations for 2 seats or greater which will split into different rows or a customer might need to sit alone will be given less priority than other reservations that can be accumalted nicely. Example: 2 seats are left in A and 1 seat is left in B, the reservation for 2 seats will be given priority over reservation for 3 seats 
+6. Customer likes to sit in the middle of the row in the theatres. 
+
+Approach to the implement the solution: 
+ a Binary search tree
