@@ -51,6 +51,8 @@ Approach to the implement the solution:
  4. Program exits if the tree is empty again after adding 20 nodes or cannot accomodate the rest of the reservation. 
  
  Why Using BST: 
- we want to accomodate the seats in first come first serv. 
+ 1. we want to accomodate the seats in first come first serve and have to scan all the empty seats from back to front for the reservations. 
+ 2. If we use list or dictionary we would need to scan all the rows which would give us the complexity N as soon as new rows are added. While BST would have complexity N only in the worst case. 
+ 
  
  
