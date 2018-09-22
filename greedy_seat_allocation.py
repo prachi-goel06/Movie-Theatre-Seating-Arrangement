@@ -1,6 +1,9 @@
 from inputFileParser import inputParser
+import os
+
 output=[]
 seats=20
+
 class tnode_0:                                     #Nil Node
     def __init__(self,seats):
         self.level=0
@@ -14,7 +17,8 @@ class tnode_0:                                     #Nil Node
 NIL_NODE = tnode_0(seats)
 # NIL_NODE.subs = [NIL_NODE,NIL_NODE]
 
-class tnode:                                      #New Node
+
+class tnode:  # Creates New Node
     def __init__(self,name,seats,seatRequested,reservationID):
         self.isFull = False
         self.name=name
@@ -24,26 +28,25 @@ class tnode:                                      #New Node
         self.seatsReserved(seatRequested,reservationID)
         self.seatsEmpty = self.vacantSeat(seats)
 
-
-
-    def vacantSeat(self, seats): #estimating number of vacant seats
+    def vacantSeat(self, seats):  # estimating number of vacant seats
         count=0
         for i in range(seats):
             if self.seatsOccupied[i]==0:
                 count+=1
         return count
 
-    def seatsReserved(self, seatRequested,reservationID): #adding the reservation ID to the reserved seats
-        seatsAssigned = reservationID + " "
+    def seatsReserved(self, seatRequested,reservationID):  # adding the reservation ID to the reserved seats
+        seatsAssigned = []
         for i in range(len(self.seatsOccupied)):
             if seatRequested != 0:
                 if self.seatsOccupied[i] == 0:
                     self.seatsOccupied[i] = reservationID
                     seatRequested -= 1
-                    seatsAssigned += self.name+str(i)+','
+                    seatsAssigned.append(self.name+str(i))
             else:
                 break
-        output.append(seatsAssigned)
+
+        output.append(reservationID+" "+",".join(seatsAssigned))
         return self.seatsOccupied
 
 
@@ -149,13 +152,13 @@ class BST:   #binary search tree to find the correct row and seats
             start_node = start_node.subs[1]
 
     def writingOutput(self,seatsAssigned):
-        outfile=open("outfile",'a')
+        outfile=open("outfile.txt", 'w+')
         for i in seatsAssigned:
             outfile.write(i+"\n")
 
 if __name__ == '__main__':
-    data = inputParser("inputFile.txt")
-
+    FilePath=input("Please Enter the File Path: ")
+    data = inputParser(FilePath)
     Arrangement = BST()
     # print(data)
     for eachReservation in data:
@@ -167,4 +170,7 @@ if __name__ == '__main__':
 
     Arrangement.print_tree()
     Arrangement.writingOutput(output)
+    outputFilePath=os.getcwd()+'/'+'outfile.txt'
+    print (outputFilePath)
+
 
