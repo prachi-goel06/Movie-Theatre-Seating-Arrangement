@@ -2,9 +2,11 @@
 Algorithm to implement seating arrangement in a movie theatre to maximize both customer satisfaction and theater utilization.
 
 Summary: 
+
 This algorithm arranges the seats for the customer such that the customer sattisfaction is received by allocating majority seats of the reservation together and maximising theater utilisation . 
 
 Description: 
+
 Given a theatre with seating capacity of 20 seats in each of the 10 rows (200 seats), the algorithm needs to assign seats to the customer to maximise theatre utilisation and gaurantees customer sattisfaction. 
 
 Input: 
