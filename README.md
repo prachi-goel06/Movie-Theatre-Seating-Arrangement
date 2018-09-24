@@ -27,6 +27,9 @@ R002 F16,F17,F18,F19
 R003 A1,A2,A3,A4 
 R004 J4,J5,J6
 
+Please Note: The reservations that could not be accomodated in the theatre have 0 seats. 
+example: R005 0 represents the reservation cannot be fullfilled at this time.
+
 Approach to solution: 
 
 This problem is a type of Constraint sattisfaction problem in which set of objects whose state must satisfy a number of constraints or limitations. CSPs represent the entities in a problem as a homogeneous collection of finite constraints over variables, which is solved by constraint satisfaction methods. These kind of problems have high complexity and generally cannot be solved in polynomial time thus making them a part of NP Hard problems. 
@@ -48,6 +51,7 @@ Assumptions made while implementing the Algorithm:
 3. Customers who reserves the seat first are offered better seats(seats that are far from the screen) than the customers who are reserve later. 
 4. Bulk seat booking reservation(>=100)will be given more priority than small bookings. 
 5. When no row is empty and only vacant seats need to be full filled reservation that suits the both sattisfaction are selected first.  
+6. After the theatre has few vacant seats the Groups are splitted to adjust in the vacant seats. 
 
 Approach to the implement the solution: 
 
@@ -67,6 +71,16 @@ Approach to the implement the solution:
  1. Linked List can be replaced by Binary Search Tree where the root node is always the Last Row with Empty Seats. It will help to reduce the search time through the nodes. 
  2. Rather than allocating every reservation the best seats on First Come First Serve basis algorithm can use threshold for each reservation such that it meets Customer Sattisfaction and Theatre Utilisation. 
  
+ How to run the program: 
+ 1. Open Command prompt or terminal. 
+ 2. Move to the directory where the program is stored. Make sure all the program files are in the same folder before running the program.
+ 3. The program accepts only text files of the format where each line in the file will be comprised of a reservation identifier, followed by a space, and then the number of seats requested. The reservation identifier will have the format: R####. as displayed above. 
+ 3. Type the following command in the  Command Prompt or Terminal. 
+            python greedySeatAllocation.py *inputFilePath*
+4. It takes input file path as system arrgument. 
+5. The output generated is a text file, Each row in the file should include the reservation number followed by a space, and then a comma-delimited list of the assigned seats.
+6. Program also generate the debug logs for event logging. 
+
  
  
  

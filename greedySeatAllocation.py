@@ -9,7 +9,7 @@
 from inputFileParser import inputParser
 import os,sys
 import logging
-#logging.basicConfig(filename='example.log',level=logging.DEBUG)
+logging.basicConfig(filename='debug.log',level=logging.DEBUG)
 output={}
 seats=20
 
@@ -179,7 +179,7 @@ class BookingTheatre:   # Linked List to find the correct row and seats
                 return self.root
 
     def writing_output(self, data ,output):  # writing the output to the file
-        logging.info("Writing data to the file")
+        logging.info("Program Finished....Writing seats allocated to the file")
         outfile=open("outfile.txt", 'w+')
         for eachReservation in data:
             if eachReservation[0] in output:
@@ -199,7 +199,7 @@ if __name__ == '__main__':
             break
         if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
             not_inserted.append(eachReservation)
-        logging.debug("Total seats still vacant", str(Arrangement.seatsAvailable))
+        logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
     more_inserted = []
     sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
 
@@ -211,10 +211,11 @@ if __name__ == '__main__':
         else:
             more_inserted.append(eachReservation)
             Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
-        logging.debug("Total seats still vacant", str(Arrangement.seatsAvailable))
+        logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
 
     Arrangement.writing_output(data,output)
     outputFilePath=os.getcwd()+'/'+'outfile.txt'
     print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
+    logging.info("Check the terminal to fetch Output File path")
 
 
