@@ -1,10 +1,20 @@
-from inputFileParser import inputParser
-import os
+# Pre-requisites: Imports od library and inputParser program.
+# Loosely based on greedy algorithm and uses LinkedList.
+# Each node is an instance of tnodes and represents a Theater Row.
+# Reservations associated with one InputFile is an instance of BookingTheatre class.
+# Different member functions of class BookingTheatre helps to perform allocate seats in the theatre.
+# This program takes command line input of file path and shows the path to the output file.
 
-output=[]
+
+from inputFileParser import inputParser
+import os,sys
+import logging
+#logging.basicConfig(filename='example.log',level=logging.DEBUG)
+output={}
 seats=20
 
-class tnode_0:                                     #Nil Node
+
+class nilNode:  # Nil Node
     def __init__(self,seats):
         self.level=0
         self.name=None
@@ -12,49 +22,48 @@ class tnode_0:                                     #Nil Node
         self.seatsEmpty=None
         self.subs=[None,None]
         self.seatsOccupied = [0 for i in range (seats)]
+        self.parent=None
 
-
-NIL_NODE = tnode_0(seats)
+NIL_NODE = nilNode(seats)
 # NIL_NODE.subs = [NIL_NODE,NIL_NODE]
 
 
 class tnode:  # Creates New Node
-    def __init__(self,name,seats,seatRequested,reservationID):
+    def __init__(self,name,seats,seatRequested,reservationID,currentNode):
         self.isFull = False
         self.name=name
         self.totalSeats = 20
         self.subs=[None,None]
         self.seatsOccupied=[0 for i in range (seats)]
-        self.seatsReserved(seatRequested,reservationID)
-        self.seatsEmpty = self.vacantSeat(seats)
+        self.seats_reserved(seatRequested, reservationID)
+        self.seatsEmpty = self.vacant_seat(seats)
+        self.parent = currentNode
 
-    def vacantSeat(self, seats):  # estimating number of vacant seats
+    def vacant_seat(self, seats):  # estimating number of vacant seats
         count=0
         for i in range(seats):
             if self.seatsOccupied[i]==0:
                 count+=1
         return count
 
-    def seatsReserved(self, seatRequested,reservationID):  # adding the reservation ID to the reserved seats
-        seatsAssigned = []
+    def seats_reserved(self, seatRequested, reservationID):  # adding the reservation ID to the reserved seats
+        seats_assigned = []
         for i in range(len(self.seatsOccupied)):
             if seatRequested != 0:
                 if self.seatsOccupied[i] == 0:
                     self.seatsOccupied[i] = reservationID
                     seatRequested -= 1
-                    seatsAssigned.append(self.name+str(i))
+                    seats_assigned.append(self.name + str(i))
             else:
                 break
-
-        output.append(reservationID+" "+",".join(seatsAssigned))
+        if reservationID not in output:
+            output[reservationID]=",".join(seats_assigned)
+        else:
+            output[reservationID]+=","+",".join(seats_assigned)
         return self.seatsOccupied
 
 
-
-
-
-
-class BST:   #binary search tree to find the correct row and seats
+class BookingTheatre:   # Linked List to find the correct row and seats
     def __init__(self):
         self.totalNodes = 10
         self.root=NIL_NODE
@@ -62,115 +71,150 @@ class BST:   #binary search tree to find the correct row and seats
         self.totalSeats = 20
         self.seatsAvailable = self.totalNodes * self.totalSeats
 
-
-    def height(self):
-        return self.root.level
-
-    def lookup(self,seatRequested):         #finding if the number of seats exist
+    def lookup(self,seatRequested):         # finding if any back row still vacant
         if self.root != NIL_NODE:
-            # print("Root already present")
+            logging.debug("Root already present")
             return self.__lookup(self.root, seatRequested)
 
-    def __lookup(self, tnode, seatRequested):
-        # print ("Current Node is: ", tnode.name)
+    def __lookup(self, tnode, seatRequested): # recursive function to look for seats with empty seats
+        logging.debug("Current Node is: {}".format( tnode.name))
         if tnode.seatsEmpty >= seatRequested:
             return tnode
         else:
             sub=tnode.subs[1]
             if sub != None:
-                # print("Child is present: going to child")
+                logging.debug("Current Node is {} with vacant seats{}".format(tnode.name,tnode.seatsEmpty))
+                logging.debug("Trying to find better match in other nodes.....")
                 return self.__lookup(sub, seatRequested)
             else:
-                # print ("Child not present: Have to create a new child")
+                logging.debug("No matching vacant node found, Try creating a new node!")
                 return None
 
     def insert(self, seatRequested,reservationID,seats):
-        # print("Inserting a new Node --------------")
-
-        if self.root != NIL_NODE: # we are not an empty tree
-            self.lastinsert = self.insertNode(self.root, seatRequested, self.totalNodes, reservationID)
-
-        else: #adding the root to the tree
-            name=chr(self.totalNodes+64)
-            self.root = tnode(name,seats,seatRequested,reservationID)
+        if self.root != NIL_NODE:  # we are not an empty tree
+            self.lastinsert = self.__insert_node(self.root, seatRequested, self.totalNodes, reservationID)
+            self.delete(self.lastinsert)
+        else:  # adding the first node to the List
+            logging.info("Adding new root row to the List")
+            name = chr(self.totalNodes+64)
+            self.root = tnode(name, seats, seatRequested, reservationID,None)
             self.totalNodes -= 1
             self.lastinsert = self.root
-            self.substractSeats (seatRequested)
-        # print ("Exiting Insertion --------------")
+            self.substract_seats (seatRequested)
+        #  ("Exiting Insertion --------------")
 
-    def insertNode(self, currentNode, seatRequested,totalNodes,reservationID):
-
-        # print("Into insertNode: ")
+    def __insert_node(self, currentNode, seatRequested, totalNodes, reservationID):
         if seatRequested <= currentNode.seatsEmpty: # key exists, update value
-            currentNode.seatsOccupied=self.seatsReserved(seatRequested,currentNode.reservationID)
-            currentNode.seatsEmpty=self.vacantSeat(currentNode.seatsOccupied)
-            self.substractSeats (seatRequested)
-        elif seatRequested > currentNode.seatsEmpty:
-            # print ("Current Node is: ", currentNode.name)
-            # print ("Current Node seats are: ", currentNode.seatsOccupied)
+            currentNode.seatsOccupied=currentNode.seatsReserved(seatRequested,currentNode.reservationID)
+            currentNode.seatsEmpty=currentNode.vacant_seat(seats)
+            self.substract_seats (seatRequested)
+        elif seatRequested > currentNode.seatsEmpty: #lookup to find best place to add new node
             if(currentNode.subs[1]):
-                # print ("Going into Right Row")
-                return self.insertNode(currentNode.subs[1], seatRequested, totalNodes, reservationID)
-            elif currentNode.subs[1]==None and totalNodes > 0:
-                self.substractSeats (seatRequested)
+                return self.__insert_node(currentNode.subs[1], seatRequested, totalNodes, reservationID)
+            elif currentNode.subs[1]==None and totalNodes > 0:  # adding a new node (row) to the linked list
+                self.substract_seats (seatRequested)
                 name = chr(self.totalNodes + 64)
-                # print ("New Row Creation: total nodes current: ", self.totalNodes, " Name: ", name)
-                currentNode.subs[1] = tnode(name,seats,seatRequested,reservationID)
+                currentNode.subs[1] = tnode(name, seats, seatRequested, reservationID, currentNode)
+                logging.info("Addign new row {} to the List".format(name))
                 self.totalNodes -= 1
-                return currentNode.subs[1]
         return currentNode.subs[1]
 
-    def verifySeats(self, seatRequested, reservationID):  #checking if any back row with seats exists
-        # print ("Seat Requested : ", seatRequested, " Reservation ID: ", reservationID)
-        # print("total nodes are: ", self.totalNodes)
+    def verify_seats(self, seatRequested, reservationID):  # checking if any back row with seats exists else call insert function
+        logging.debug ("Reservation ID:  Seat Requested : {} ".format(reservationID,seatRequested))
+        can_insert_continous_seats = False
+        if (seatRequested >20):
+            return can_insert_continous_seats
         tnode = self.lookup(seatRequested)
-        # print ("")
         if tnode == None and self.totalNodes >0:
-            # print ("creating new Node")
             self.insert(seatRequested, reservationID, seats)
-            tnode = self.lastinsert
+            can_insert_continous_seats = True
         elif (tnode != None):
-            # print ("No need to create new Node")
-            self.substractSeats(seatRequested)
-            tnode.seatsReserved( seatRequested, reservationID)
-            tnode.seatsEmpty = tnode.vacantSeat(seats)
+            logging.debug("No need to add a new node reservation can be accomodated in {}".format(tnode.name))
+            self.substract_seats(seatRequested)
+            tnode.seats_reserved(seatRequested, reservationID)
+            tnode.seatsEmpty = tnode.vacant_seat(seats)
+            parent=self.delete(tnode)
+            can_insert_continous_seats = True
         elif (self.totalNodes is 0):
-            return
+            return can_insert_continous_seats
 
-        # print("Current Node is: ", tnode.name)
-        # print ("Current Node seats are: ", tnode.seatsOccupied)
-        return tnode
+        return can_insert_continous_seats
 
-    def substractSeats(self, seatsRequested):
+    def substract_seats(self, seatsRequested): #finding total seats available
         self.seatsAvailable -= seatsRequested
 
-    def print_tree(self):
-        print("******** Printing Tree ********")
-        start_node = self.root
-        while (start_node != None):
-            print("Current Node: {}, Current Seat: {}".format(start_node.name, start_node.seatsOccupied) )
-            start_node = start_node.subs[1]
+    def split_insert(self, seatsRequested, reservationID): # spliting the later bookings to utilise the theater
+        logging.info("splitting the booking")
+        self.substract_seats(seatsRequested)
+        currentNode = self.root
+        while currentNode!=None and seatsRequested!=0:
+            if currentNode.seatsEmpty<=seatsRequested:
+                logging.debug('current node name:{} empty seats:{} current seat requested: {}'.format(currentNode.name,str(currentNode.seatsEmpty),str(seatsRequested)))
+                currentNode.seats_reserved(currentNode.seatsEmpty,reservationID)
+                seatsRequested -= currentNode.seatsEmpty
+                currentNode.seatsEmpty = currentNode.vacant_seat(seats)
+                currentNode=currentNode.subs[1]
+                self.delete(currentNode.parent)
+            else:
+                logging.debug('current node empty seats:{} seats requested: {}'.format(str(currentNode.seatsEmpty),str(seatsRequested)))
+                currentNode.seats_reserved(seatsRequested,reservationID)
+                currentNode.seatsEmpty=currentNode.vacant_seat(seats)
+                seatsRequested-=seatsRequested
+                self.delete(currentNode)
 
-    def writingOutput(self,seatsAssigned):
+    def delete(self,currentNode):  # deleting the nodes(row) from the list for efficient search
+        if currentNode.seatsEmpty==0:
+            logging.debug("deleted node {}".format(currentNode.name))
+            if currentNode == self.root and currentNode.subs[1] is not None:
+                currentNode.subs[1].parent= None
+                self.root=currentNode.subs[1]
+                return self.root
+            elif currentNode!= self.root:
+                currentNode.parent.subs[1]=currentNode.subs[1]
+                if currentNode.subs[1]!=None:
+                    currentNode.subs[1].parent=currentNode.parent
+                    return currentNode.parent
+            else:
+                self.root=nilNode
+                return self.root
+
+    def writing_output(self, data ,output):  # writing the output to the file
+        logging.info("Writing data to the file")
         outfile=open("outfile.txt", 'w+')
-        for i in seatsAssigned:
-            outfile.write(i+"\n")
+        for eachReservation in data:
+            if eachReservation[0] in output:
+                outfile.write('{} {}\n'.format(eachReservation[0],output[eachReservation[0]]))
+            else:
+                outfile.write('{} {}\n'.format(eachReservation[0], str(0)))
 
 if __name__ == '__main__':
-    FilePath=input("Please Enter the File Path: ")
+    FilePath=sys.argv[1]
     data = inputParser(FilePath)
-    Arrangement = BST()
-    # print(data)
-    for eachReservation in data:
-        print("%%%%%%%%%%%%%%%%%%%: ", Arrangement.seatsAvailable)
-        if Arrangement.seatsAvailable == 0:
-            print("Theatre is full")
-            break
-        Arrangement.verifySeats(eachReservation[1], str(eachReservation[0]))
+    Arrangement = BookingTheatre()
+    not_inserted = []
 
-    Arrangement.print_tree()
-    Arrangement.writingOutput(output)
+    for eachReservation in data:  # allocating group seats in same row
+        if Arrangement.seatsAvailable == 0:
+            logging.info("Theatre is full no vacant seat available")
+            break
+        if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
+            not_inserted.append(eachReservation)
+        logging.debug("Total seats still vacant", str(Arrangement.seatsAvailable))
+    more_inserted = []
+    sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
+
+    for eachReservation in sorted_not_inserted_bookings:  # allocating remaining seats by splitting groups to utilize theater
+        if (Arrangement.seatsAvailable == 0):
+            break
+        elif (eachReservation[1] > Arrangement.seatsAvailable):
+            continue
+        else:
+            more_inserted.append(eachReservation)
+            Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
+        logging.debug("Total seats still vacant", str(Arrangement.seatsAvailable))
+
+    Arrangement.writing_output(data,output)
     outputFilePath=os.getcwd()+'/'+'outfile.txt'
-    print (outputFilePath)
+    print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
 
 
