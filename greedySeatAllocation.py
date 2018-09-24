@@ -189,35 +189,38 @@ class BookingTheatre:   # Linked List to find the correct row and seats
 
 if __name__ == '__main__':
     FilePath=sys.argv[1]
-    data = inputParser(FilePath)
-    Arrangement = BookingTheatre()
-    not_inserted = []
+    try:
+        data = inputParser(FilePath)
+        Arrangement = BookingTheatre()
+        not_inserted = []
 
-    for eachReservation in data:  # allocating group seats in same row
-        if Arrangement.seatsAvailable == 0:
-            logging.info("Theatre is full no vacant seat available")
-            break
-        if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
-            not_inserted.append(eachReservation)
-        logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
-    more_inserted = []
-    sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
+        for eachReservation in data:  # allocating group seats in same row
+            if Arrangement.seatsAvailable == 0:
+                logging.info("Theatre is full no vacant seat available")
+                break
+            if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
+                not_inserted.append(eachReservation)
+            logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
+        more_inserted = []
+        sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
 
-    for eachReservation in sorted_not_inserted_bookings:  # allocating remaining seats by splitting groups to utilize theater
-        if (Arrangement.seatsAvailable == 0):
-            break
-        elif (eachReservation[1] > Arrangement.seatsAvailable):
-            continue
-        else:
-            more_inserted.append(eachReservation)
-            Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
-        logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
+        for eachReservation in sorted_not_inserted_bookings:  # allocating remaining seats by splitting groups to utilize theater
+            if (Arrangement.seatsAvailable == 0):
+                break
+            elif (eachReservation[1] > Arrangement.seatsAvailable):
+                continue
+            else:
+                more_inserted.append(eachReservation)
+                Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
+            logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
 
-    Arrangement.writing_output(data,output)
+        Arrangement.writing_output(data,output)
 
-    #printing the putput file path.....>
-    outputFilePath=os.getcwd()+'/'+'outfile.txt'
-    print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
-    logging.info("Check the terminal to fetch Output File path")
+        #printing the putput file path.....>
+        outputFilePath=os.getcwd()+'/'+'outfile.txt'
+        print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
+        logging.info("Check the terminal to fetch Output File path")
 
-
+    except :
+        logging.error("File not found at the location")
+        print("File not found at the location")
