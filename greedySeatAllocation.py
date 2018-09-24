@@ -1,9 +1,9 @@
-# Pre-requisites: Imports od library and inputParser program.
-# Loosely based on greedy algorithm and uses LinkedList.
-# Each node is an instance of tnodes and represents a Theater Row.
-# Reservations associated with one InputFile is an instance of BookingTheatre class.
+# Pre-requisites: Imports os,sys,logging libraries and inputParser program.
+# Loosely based on greedy algorithm and uses Linked List.
+# Each node is an instance of class tnodes and represents a Theater Row.
+# Reservations requests associated with one Input File is an instance of BookingTheatre class.
 # Different member functions of class BookingTheatre helps to perform allocate seats in the theatre.
-# This program takes command line input of file path and shows the path to the output file.
+# This program takes command line input of file path and shows the path to the output file with allocated seats to reservation ID.
 
 
 from inputFileParser import inputParser
@@ -214,6 +214,8 @@ if __name__ == '__main__':
         logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
 
     Arrangement.writing_output(data,output)
+
+    #printing the putput file path.....>
     outputFilePath=os.getcwd()+'/'+'outfile.txt'
     print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
     logging.info("Check the terminal to fetch Output File path")
