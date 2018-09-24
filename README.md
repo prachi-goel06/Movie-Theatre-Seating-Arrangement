@@ -71,6 +71,12 @@ Approach to the implement the solution:
  1. Linked List can be replaced by Binary Search Tree where the root node is always the Last Row with Empty Seats. It will help to reduce the search time through the nodes. 
  2. Rather than allocating every reservation the best seats on First Come First Serve basis algorithm can use threshold for each reservation such that it meets Customer Sattisfaction and Theatre Utilisation. 
  
+ Program Files: 
+ 1. InputFileMaker.py: Uses random library to generate random reservation requests.
+ 2. InputFileParser.py: Parse the given input file of above format into list of reservations
+ 3. greedySeatAllocation: Uses greedy approach to allocate seats.
+
+ 
  How to run the program: 
  1. Open Command prompt or terminal. 
  2. Move to the directory where the program is stored. Make sure all the program files are in the same folder before running the program.
