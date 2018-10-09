@@ -49,9 +49,9 @@ Assumptions made while implementing the Algorithm:
 1. Cost of all the seats in the theatre are same. 
 2. Seats are reserved on the First come first serve basis. 
 3. Customers who reserves the seat first are offered better seats(seats that are far from the screen) than the customers who are reserve later. 
-4. Bulk seat booking reservation(>=100)will be given more priority than small bookings. 
-5. When no row is empty and only vacant seats need to be full filled reservation that suits the both sattisfaction are selected first.  
-6. After the theatre has few vacant seats the Groups are splitted to adjust in the vacant seats. 
+4. When no row is empty and only vacant seats need to be full filled reservation that suits the both sattisfaction are selected first.  
+5. After the theatre has few vacant seats the Groups are splitted to adjust in the vacant seats. 
+6. Every booking wants to get the seats even if the seats allocated are in seperate rows. 
 
 Approach to the implement the solution: 
 
@@ -70,6 +70,7 @@ Approach to the implement the solution:
  Scope of improvement: 
  1. Linked List can be replaced by Binary Search Tree where the root node is always the Last Row with Empty Seats. It will help to reduce the search time through the nodes. 
  2. Rather than allocating every reservation the best seats on First Come First Serve basis algorithm can use threshold for each reservation such that it meets Customer Sattisfaction and Theatre Utilisation. 
+ 3. Bulk seat booking reservation(>=100)will be given more priority than small bookings. 
  
  How to run the program: 
  1. Open Command prompt or terminal. 
