@@ -53,7 +53,7 @@ class tnode:  # Creates New Node
                 if self.seatsOccupied[i] == 0:
                     self.seatsOccupied[i] = reservationID
                     seatRequested -= 1
-                    seats_assigned.append(self.name + str(i))
+                    seats_assigned.append(self.name + str(i+1))
             else:
                 break
         if reservationID not in output:
@@ -154,7 +154,8 @@ class BookingTheatre:   # Linked List to find the correct row and seats
                 seatsRequested -= currentNode.seatsEmpty
                 currentNode.seatsEmpty = currentNode.vacant_seat(seats)
                 currentNode=currentNode.subs[1]
-                self.delete(currentNode.parent)
+                if currentNode is not None:
+                    self.delete(currentNode.parent)
             else:
                 logging.debug('current node name {} empty seats:{} seats requested: {}'.format(currentNode.name,str(currentNode.seatsEmpty),str(seatsRequested)))
                 currentNode.seats_reserved(seatsRequested,reservationID)
@@ -188,39 +189,35 @@ class BookingTheatre:   # Linked List to find the correct row and seats
                 outfile.write('{} {}\n'.format(eachReservation[0], str(0)))
 
 if __name__ == '__main__':
-    FilePath=sys.argv[1]
     try:
-        data = inputParser(FilePath)
-        Arrangement = BookingTheatre()
-        not_inserted = []
+        FilePath=sys.argv[1]
+    except FileNotFoundError as err:
+        print(err)
+    data = inputParser(FilePath)
+    Arrangement = BookingTheatre()
+    not_inserted = []
 
-        for eachReservation in data:  # allocating group seats in same row
-            if Arrangement.seatsAvailable == 0:
-                logging.info("Theatre is full no vacant seat available")
-                break
-            if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
-                not_inserted.append(eachReservation)
-            #logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
-        more_inserted = []
-        sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
+    for eachReservation in data:  # allocating group seats in same row
+        if Arrangement.seatsAvailable == 0:
+            logging.info("Theatre is full no vacant seat available")
+            break
+        if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
+            not_inserted.append(eachReservation)
+    more_inserted = []
+    sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
 
-        for eachReservation in sorted_not_inserted_bookings:  # allocating remaining seats by splitting groups to utilize theater
-            if (Arrangement.seatsAvailable == 0):
-                break
-            elif (eachReservation[1] > Arrangement.seatsAvailable):
-                continue
-            else:
-                more_inserted.append(eachReservation)
-                Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
-            #logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
+    for eachReservation in sorted_not_inserted_bookings:  # allocating remaining seats by splitting groups to utilize theater
+        if (Arrangement.seatsAvailable == 0):
+            break
+        elif (eachReservation[1] > Arrangement.seatsAvailable):
+            continue
+        else:
+            more_inserted.append(eachReservation)
+            Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
 
-        Arrangement.writing_output(data,output)
+    Arrangement.writing_output(data,output)
 
-        #printing the putput file path.....>
-        outputFilePath=os.getcwd()+'/'+'outfile.txt'
-        print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
-        logging.info("Check the terminal to fetch Output File path")
-
-    except :
-        logging.error("File not found at the location")
-        print("File not found at the location")
+    #printing the putput file path.....>
+    outputFilePath=os.getcwd()+'/'+'outfile.txt'
+    print ('{} {} {}\n'.format('\n','Output file location:',outputFilePath))
+    logging.info("Check the terminal to fetch Output File path")

@@ -13,7 +13,7 @@ import os
 def inputParser(inpFile):
     if os.path.exists(inpFile):
         reservationList=[]
-        inputFile=open("inputFile.txt",'r')
+        inputFile=open(inpFile,'r')
         totalSeats=300
         for line in inputFile:
             if totalSeats >=0 :
@@ -24,5 +24,5 @@ def inputParser(inpFile):
                 break
         return reservationList
     else:
-        raise Exception(FileNotFoundError)
+        raise Exception("File Not Found Error")
 
