@@ -73,21 +73,21 @@ class BookingTheatre:   # Linked List to find the correct row and seats
 
     def lookup(self,seatRequested):         # finding if any back row still vacant
         if self.root != NIL_NODE:
-            logging.debug("Root already present")
+            logging.debug("Root node already present")
             return self.__lookup(self.root, seatRequested)
 
     def __lookup(self, tnode, seatRequested): # recursive function to look for seats with empty seats
-        logging.debug("Current Node is: {} and vacant seat are {}".format( tnode.name,tnode.seatsEmpty))
+        logging.debug("Current Node is: {} and vacant seat are {} and seat requested are {}".format( tnode.name,tnode.seatsEmpty,seatRequested))
         if tnode.seatsEmpty >= seatRequested:
             return tnode
         else:
             sub=tnode.subs[1]
             if sub != None:
-                logging.debug("Current Node is {} with vacant seats{}".format(tnode.name,tnode.seatsEmpty))
+                logging.debug("Current Node is {} with vacant seats {}".format(tnode.name,tnode.seatsEmpty))
                 logging.debug("Trying to find better match in other nodes.....")
                 return self.__lookup(sub, seatRequested)
             else:
-                logging.debug("No matching vacant node found, Try creating a new node!")
+                logging.debug("No existing vacant node found, creating a new node.....!")
                 return None
 
     def insert(self, seatRequested,reservationID,seats):
@@ -156,7 +156,7 @@ class BookingTheatre:   # Linked List to find the correct row and seats
                 currentNode=currentNode.subs[1]
                 self.delete(currentNode.parent)
             else:
-                logging.debug('current node empty seats:{} seats requested: {}'.format(str(currentNode.seatsEmpty),str(seatsRequested)))
+                logging.debug('current node name {} empty seats:{} seats requested: {}'.format(currentNode.name,str(currentNode.seatsEmpty),str(seatsRequested)))
                 currentNode.seats_reserved(seatsRequested,reservationID)
                 currentNode.seatsEmpty=currentNode.vacant_seat(seats)
                 seatsRequested-=seatsRequested
@@ -200,7 +200,7 @@ if __name__ == '__main__':
                 break
             if not Arrangement.verify_seats(eachReservation[1], str(eachReservation[0])):
                 not_inserted.append(eachReservation)
-            logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
+            #logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
         more_inserted = []
         sorted_not_inserted_bookings=(sorted(not_inserted,key=lambda x:x[1]))
 
@@ -212,7 +212,7 @@ if __name__ == '__main__':
             else:
                 more_inserted.append(eachReservation)
                 Arrangement.split_insert(eachReservation[1], str(eachReservation[0]))
-            logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
+            #logging.debug("Total seats still vacant".format(str(Arrangement.seatsAvailable)))
 
         Arrangement.writing_output(data,output)
 
