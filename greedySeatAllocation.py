@@ -77,7 +77,7 @@ class BookingTheatre:   # Linked List to find the correct row and seats
             return self.__lookup(self.root, seatRequested)
 
     def __lookup(self, tnode, seatRequested): # recursive function to look for seats with empty seats
-        logging.debug("Current Node is: {}".format( tnode.name))
+        logging.debug("Current Node is: {} and vacant seat are {}".format( tnode.name,tnode.seatsEmpty))
         if tnode.seatsEmpty >= seatRequested:
             return tnode
         else:
@@ -120,7 +120,7 @@ class BookingTheatre:   # Linked List to find the correct row and seats
         return currentNode.subs[1]
 
     def verify_seats(self, seatRequested, reservationID):  # checking if any back row with seats exists else call insert function
-        logging.debug ("Reservation ID:  Seat Requested : {} ".format(reservationID,seatRequested))
+        logging.debug ("Reservation ID: {} Seat Requested : {} ".format(reservationID,seatRequested))
         can_insert_continous_seats = False
         if (seatRequested >20):
             return can_insert_continous_seats
