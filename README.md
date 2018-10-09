@@ -82,11 +82,12 @@ Approach to the implement the solution:
  1. Open Command prompt or terminal. 
  2. Move to the directory where the program is stored. Make sure all the program files are in the same folder before running the program.
  3. The program accepts only text files of the format where each line in the file will be comprised of a reservation identifier, followed by a space, and then the number of seats requested. The reservation identifier will have the format: R####. as displayed above. 
- 3. Type the following command in the  Command Prompt or Terminal. 
+ 4. Ensure python module logging is present.
+ 5. Type the following command in the  Command Prompt or Terminal. 
             python greedySeatAllocation.py *inputFilePath*
-4. It takes input file path as system arrgument. 
-5. The output generated is a text file, Each row in the file should include the reservation number followed by a space, and then a comma-delimited list of the assigned seats.
-6. Program also generate the debug logs for event logging. 
+6. It takes input file path as system arrgument. 
+7. The output generated is a text file, Each row in the file should include the reservation number followed by a space, and then a comma-delimited list of the assigned seats.
+8. Program also generate the debug logs for event logging. 
 
  
  
